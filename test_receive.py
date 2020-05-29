@@ -23,12 +23,22 @@ udp = MRT()
 
 if udp.mrt_open(host, port1):
 
+    accepted_conn = []
     while True:
 
-        conn = udp.mrt_accept1()
-        print("received connection from " + str(conn))
-        udp.mrt_receive1(conn)
-        print("received message from " + str(conn))
+        accepted_conn.extend(udp.mrt_accept_all())
+        for conn in accepted_conn:
+            print("received connection from " + str(conn))
+            data = udp.mrt_receive1(conn)
+            print("received message " + data + " from " + str(conn))
+
+    # while True:
+    #
+    #     accepted_conn = udp.mrt_accept_all()
+    #     for conn in accepted_conn:
+    #         print("received connection from " + str(conn))
+    #         udp.mrt_receive1(conn)
+    #         print("received message from " + str(conn))
 
 
 udp.mrt_close() # stop receiving

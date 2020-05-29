@@ -11,7 +11,7 @@ import random  # use to test "artificially" dropped packets
 class MRT:
     BLOCKSIZE = 1024
     WINDOWSIZE = 10
-    PACKETSIZE = 512
+    PACKETSIZE = 20
     TIMEOUT = .5  # How long the sender waits to receive an ACK before assuming the packet was lost
 
     connections = []  # contains all accepted connections
@@ -154,6 +154,7 @@ class MRT:
             packet = "{0}{1:04d}{2}".format('DATA', self.seq_num, payload)
             packets.append(add_checksum(packet))
             self.seq_num += 1
+        print("packets: " + str(packets))
 
         # thread to receive ACKs
         ACK_receipt = threading.Thread(target=self.receive_ACK)
