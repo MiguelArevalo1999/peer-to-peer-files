@@ -39,12 +39,18 @@ class Node:
 		self.lock.release()
 
 	#Disconnect from given connection
-	def node_disconnect(self, ip, port):
-		#TODO (THOMAS)
+    def node_disconnect(self, ip, port): #why ip port? not using it?
+        for neighbor in self.neighbors:
+            #for each neighbor
+            if neighbor[0] == ip and neighbor[1] == port:
+            #if the neighbor is the specified connection
+                mrt.mrt_disconnect(neighbor)
+                #send the request to disconnect (disconnects if ACLS is received)
 
 	# Close connection
 	def node_close(self, ip, port):
-		#TODO (THOMAS)
+	    mrt.mrt_close()
+
 
 	#Broadcast message. Create functions in MRT as neccesary
 	def node_broadcast(self):
