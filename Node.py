@@ -39,7 +39,7 @@ class Node:
 		self.lock.release()
 
 	#Disconnect from given connection
-    def node_disconnect(self, ip, port): #why ip port? not using it?
+    def node_disconnect(self, ip, port):
         for neighbor in self.neighbors:
             #for each neighbor
             if neighbor[0] == ip and neighbor[1] == port:
