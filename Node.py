@@ -2,6 +2,7 @@ import socket
 from MRT import MRT
 import threading
 import time
+import os
 
 class Node:
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -14,6 +15,7 @@ class Node:
 	mrt = MRT()
 	isOpen = False
 	lock = threading.Lock()
+        directory = ''
 
 	#TODO (BRETT): Get Public IP and NAT Type
 	def node_open(self, ip, port):
@@ -51,10 +53,23 @@ class Node:
 	def node_close(self, ip, port):
 	    mrt.mrt_close()
 
+        def node_chat(self, msg)
+            self.mrt.mrt_chat
 
 	#Broadcast message. Create functions in MRT as neccesary
-	def node_broadcast(self):
-		#TODO (SEAN)
+	def node_broadcast(self, directory):
+            if not directory:
+                try:
+                    os.mkdir('./p2p_directory')
+                except OSError
+                    print('Directory creation failed')
+                self.directory = './p2p_directory'
+            else
+                self.directory = directory
+            files = os.listdir(self.directory)
+            for file in files
+                for conn in self.neighbors:
+                    self.mrt.mrt_broadcast(conn, file)
 
 	#Download file. May be multiple functions (request, get previous files, etc.). Create functions in MRT as neccesary.
 	def node_download()
