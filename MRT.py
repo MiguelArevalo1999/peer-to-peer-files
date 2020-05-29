@@ -26,9 +26,11 @@ class MRT:
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	ready = False
 	receiver_thread = None
+        network_files = dict()
 
 	def __init__(self):
 		self.ready = False
+                self.connection_accepted = False
 		self.receiver_thread = threading.Thread(target = self.receiver_receive)
 
 	def mrt_open(self, host, port):
@@ -44,21 +46,18 @@ class MRT:
 			return False
 
 	def mrt_connect(self, host, port):
+                self.s.setblocking(False)
+                self.connection_accepted = False
 		while True:
 			conn = (host, port)
 			packet = add_checksum('RCON')
 			self.s.sendto(packet, conn)
 			time.sleep(1)
-			try:
-				data, addr = self.s.recvfrom(self.BLOCKSIZE)
-				data = data.decode()
-				if verify_checksum(data) and data[8:12] == 'ACON':
-					self.connections.append(conn)
-					print("Connecting to {0}".format(conn))
-					return conn
-			except socket.error as e:
-				if e.errno == 10035:
-					pass
+			if self.connection_accepted == True:
+                            self.connections.append(conn)
+                            print("connecting to {0}".format(conn))
+                            self.connection_accepted = False
+                            return conn
 
 	def mrt_accept1(self):
 		if not self.ready:
@@ -178,7 +177,35 @@ class MRT:
 		thread_flag = False
 		ACK_receipt.join()
 		return True
+        def mrt_chat(self, msg):
+            msg_to_broadcast = "{0}{1}".format('CHAT', msg)
+            packet = add_checksum(msg_to_broadcast)
+            for conn in self.connections:
+                self.s.sendto(packet, conn)
 
+        def mrt_broadcast(self, conn, file):
+            self.network_files[file] = conn[0]
+            print(self.network_files)
+            msg = '{0}{1}'.format('BCST', file)
+            packet = add_checksum(msg)
+            self.s.sendto(packet, conn)
+            time.sleep(1)
+
+    # def migrate_host(self)
+    def send_peers(self):
+        peers_list = ''
+        for peer in self.connections:
+            peers_list = peers_list + peer[0] + ':' + str(peer[1]) + ','
+        peers_msg = add_checksum('PEER' + peers_list)
+        for conn in self.connections:
+        self.s.sendto(peers_msg, conn)
+
+    def update_peers(self, peers_data):
+        updated_peers = []
+        peers_data = peers_data.split(',')[:-1]
+        for peer in peers_data:
+            peers_data = peer.split(':')
+            connection = ()
 
 	def receive_ACK(self): #function so client can receive ACKs while sending data
 		global ACKed_pack_num
@@ -232,6 +259,26 @@ class MRT:
 							self.expected_seq_num.pop(addr)
 							self.lock.release()
 							print('{0} has disconnected.'.format(addr))
+                                                 elif packet_type == 'CHAT':
+                                                        broadcasted_msg = data[12:]
+                                                        print(broadcasted_msg)
+                                                        for other_conn in self.connections:
+                                                            if other_conn != addr:
+                                                                self.s.sendto(data.encode(), other_conn)
+                                                elif packet_type == 'PEER':
+                                                        peers_list = data[12:]
+                                                # update peers
+                                                elif packet_type == 'BCST':
+                                                        self.lock.acquire()
+                                                        file = data[12:]
+                                                            if file != '':
+                                                                if file not in self.network_files:
+                                                                    self.network_files[file] = addr
+                                                                    for other_conn in self.connections:
+                                                                        if other_conn != addr:
+                                                                            self.s.sendto(data.encode(), other_conn)
+                                                        print(self.network_files)
+                                                        self.lock.release()
 			except socket.error as e:
 				if e.errno == 10035:
 					pass
