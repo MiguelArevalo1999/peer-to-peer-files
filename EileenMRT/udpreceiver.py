@@ -225,44 +225,6 @@ class UdpReceiver:
 
         connid = self.processData(client, data)
 
-        # connid = self.mrt_register(client)
-        # # print("Connect ID=", connid)
-        # if newPacket.valid():
-        #     if connid >= 0:
-        #         if not client in self.clientmsgs:
-        #             self.clientmsgs.update({client: ClientMessage(client)})
-                
-        #         self.clientmsgs[client].addPacket(newPacket)
-
-        #         if newPacket.final:
-        #             # check missing packets
-        #             missing = self.clientmsgs[client].checkMissingPackets()
-        #             if len(missing) > 0:
-        #                 onePacket = Packet(connid, 0, CONST.RSND, 0, 0, ','.join([str(i) for i in missing]))
-        #                 packet_queue.put(ClientPacket(client, onePacket))
-        #             else:
-        #                 # got complete message
-        #                 # need to compose the whole message
-        #                 # and remove the connection and open up slot
-        #                 print('Got complete message from {}'.format(client))
-        #                 del self.client_map[client]
-        #                 del self.clientmsgs[client]
-        #                 onePacket = Packet(connid, 0, CONST.RCLS, 0, 0, "RCLS")
-        #                 packet_queue.put(ClientPacket(client, onePacket))
-        #         else:
-        #             # got a good packet, ask for next one
-        #             onePacket = Packet(connid, 0, CONST.ACON, 0, 0, "ACON")
-        #             packet_queue.put(ClientPacket(client, onePacket))
-
-        #     else:
-        #         # no available slot, ask client to close or retry later
-        #         onePacket = Packet(connid, 0, CONST.RCON, 0, 0, "RCON")
-        #         packet_queue.put(ClientPacket(client, onePacket))
-        # else:
-        #     # corrupted data, ask client to resend
-        #     onePacket = Packet(connid, 0, CONST.RSND, 0, 0, "-1")
-        #     packet_queue.put(ClientPacket(client, onePacket))
-
         return connid    # return connId here
 
     
@@ -280,37 +242,11 @@ class UdpReceiver:
 
         return retids
 
-    # # mrt_send: send a chunk of data over a given connection (may temporarily block execution if the
-    # # receiver is busy/full)
-    # def mrt_send(sock, connId, type, data):
-    #     onePacket = Packet(connId, 0, type, 0, 0, data)
-    #     sent = sock.sendto(onePacket.pack(), addr)
-    #     retdata, server = sock.recvfrom(CONST.BUFSIZE)
-    #     return retdata, server
 
     # mrt_close: close the connection
     def mrt_close(self):
         self.sock.close()
 
-    # mrt_close: indicate incoming connections are no-longer accepted
 
-
-# def thread_function(name):
-#     logging.info("Thread %s: starting", name)
-#     sleep(2)
-#     logging.info("Thread %s: finishing", name)
-
-# if __name__ == "__main__":
-#     format = "%(asctime)s: %(message)s"
-#     logging.basicConfig(format=format, level=logging.INFO,
-#                         datefmt="%H:%M:%S")
-
-#     logging.info("Main    : before creating thread")
-#     x = threading.Thread(target=thread_function, args=(1,))
-#     logging.info("Main    : before running thread")
-#     x.start()
-#     logging.info("Main    : wait for the thread to finish")
-#     # x.join()
-#     logging.info("Main    : all done")
     
 
