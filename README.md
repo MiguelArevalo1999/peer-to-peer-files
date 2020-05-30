@@ -8,7 +8,7 @@ This project is an implementation of a peer to peer file sharing service. Each p
 ## Usage 
 Run `python node_client.py`. You'll be prompted to enter a IP and a port. The first node to run at the port becomes the super node. 
 `C port #` to connect to the supernode at that port if it exists.
-`T **your chat here**` to chat with other nodes 
+`T your chat here` to chat with other nodes 
 `Q` to quit. If you are the supernode, the supernode status will be transported down the list of clients who have joined in order. 
 
 ## Testing 
