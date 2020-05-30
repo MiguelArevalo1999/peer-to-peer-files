@@ -56,6 +56,7 @@ class Node:
         self.mrt.mrt_chat
 
 	#Broadcast message. Create functions in MRT as neccesary
+    # This is doing for each internal file in the directory, broadcast that we have that file.
     def node_broadcast(self, directory):
         if not directory:
             try:
@@ -71,7 +72,16 @@ class Node:
                     self.mrt.mrt_broadcast(conn, file)
 
 	#Download file. May be multiple functions (request, get previous files, etc.). Create functions in MRT as neccesary.
-	#def node_download()
+	def node_download(self, filename):
 		#TODO (SHANE)
+        # Send requests for the names of files that each.
+        for neighbor in self.neighbors:
+            # Make the request message.
+
+        # The neighbor will begin to send the file back to the user who broadcast the request. So we need to receive it.
+        self.mrt.receiver_receive()
+
+
+
 
 

@@ -200,8 +200,6 @@ class MRT:
         self.s.sendto(packet, conn)
         time.sleep(1)
 
-
-
     # def migrate_host(self)
 
     def send_peers(self):
@@ -284,15 +282,21 @@ class MRT:
                         elif packet_type == 'PEER':
                             peers_list = data[12:]
                         # update peers
+                        # For each file that is not in the dictionary send the file name to the other connections.
                         elif packet_type == 'BCST':
                             self.lock.acquire()
                             file = data[12:]
                             if file != '':
+                                # If we receive a request for a file not in our network files.
                                 if file not in self.network_files:
                                     self.network_files[file] = addr
                                     for other_conn in self.connections:
                                         if other_conn != addr:
                                             self.s.sendto(data.encode(), other_conn)
+                                else:
+                                    # Meaning we have the file.
+                                    self.mrt_send_file(addr, file)
+
                             print(self.network_files)
                             self.lock.release()
             except socket.error as e:
@@ -300,6 +304,10 @@ class MRT:
                     pass
             time.sleep(.005)
 
+    def mrt_send_file(self, conn, filename):
+        file = open(filename, "r")
+        info = file.read()
+        self.mrt_send(info, conn)
 
 ### HELPER FUNCTIONS ###
 def verify_checksum(data):
