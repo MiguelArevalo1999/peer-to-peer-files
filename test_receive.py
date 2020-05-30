@@ -32,6 +32,8 @@ if udp.mrt_open(host, port1):
             data = udp.mrt_receive1(conn)
             print("received message " + data + " from " + str(conn))
 
+        # data = udp.mrt_probe(accepted_conn)
+
     # while True:
     #
     #     accepted_conn = udp.mrt_accept_all()
