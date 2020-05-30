@@ -45,12 +45,12 @@ class Node:
             #for each neighbor
             if neighbor[0] == ip and neighbor[1] == port:
             #if the neighbor is the specified connection
-                mrt.mrt_disconnect(neighbor)
+                self.mrt.mrt_disconnect(neighbor)
                 #send the request to disconnect (disconnects if ACLS is received)
 
 	# Close connection
     def node_close(self, ip, port):
-        mrt.mrt_close()
+        self.mrt.mrt_close()
 
     def node_chat(self, msg):
         self.mrt.mrt_chat
