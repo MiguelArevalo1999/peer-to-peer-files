@@ -12,11 +12,11 @@ Run `python node_client.py`. You'll be prompted to enter a IP and a port. The fi
 - `Q` to quit. If the supernode quits, the supernode status will be transported down the list of clients who have joined in order. 
 
 ## Testing 
-
+Testing was done using the node_*.py files. These implemented the Node class and all performed different tests. Running these simultaneously on the same computer, different computers, and different wifis is how we tested our file sharing program. 
 
 ## Extras 
 - The network tries to form connections between nodes (automatically) to increase the resilience of the network
-When a node is opened, it searches at the IP and port that it was opened at for incoming connections. If it finds one, it will automatically connect.
+When a node is opened, it searches at the IP and port that it was opened at for incoming connections. If it finds one, it will automatically connect. Also, when the supernode disconnects the node that joined the supernode first becomes the supernode and is passed the information of all the other nodes in the network. 
 
 - Routes for exchanging files are efficient (this might be hard to test if you've already implemented option 1, so perhaps turn that into a switch)
 The supernode holds the files that are being downloaded, so the furthest that a file will travel to be exchanged is between some node, the supernode, and the node that requested the file.
