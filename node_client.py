@@ -18,7 +18,8 @@ while True:
 		msg_parts = msg[2:].split(' ')
 		node.node_connect(msg_parts[0], int(msg_parts[1]))
 	elif msg[0:2] == 'T ':
-		node.node_chat(myUsername: msg[2:])
+	    message = "{0}: {1}".format(myUsername,msg[2:])
+		node.node_chat(message)
 	elif msg[0:2] == 'B ':
 		node.node_broadcast_file(msg[2:])
 	elif msg == 'G':
