@@ -8,6 +8,8 @@ myip = input('')
 print('Enter Port')
 myport = int(input(''))
 node.node_open(myip, myport)
+myUsername = string(input(''))
+
 while True:
 	msg = input('')
 	if msg == 'Q':
@@ -16,7 +18,7 @@ while True:
 		msg_parts = msg[2:].split(' ')
 		node.node_connect(msg_parts[0], int(msg_parts[1]))
 	elif msg[0:2] == 'T ':
-		node.node_chat(msg[2:])
+		node.node_chat(myUsername: msg[2:])
 	elif msg[0:2] == 'B ':
 		node.node_broadcast_file(msg[2:])
 	elif msg == 'G':
