@@ -8,7 +8,7 @@ This project is an implementation of a peer to peer file sharing service. Each p
 2.  `mrt_connect`:  This initiates a two way connection between the super node and the connecting node.  The two way connection is necessary for UDP communication between routers behind NAT's.
 3.  `mrt_accept_all`/`mrt_accetp1`:  These functions accept pending connections that are waiting to connect, where `accept1` accepts a single pending connection and `accept_all` accepts all the pending connections.
 4.   `mrt_broadcast`:  This allows for a node to signal all other nodes of a message.  We have used this to implement chatting on the network.
-5.  `mrt_broadcast\_file`:  This allows for a node to broadcast the name of a file that they have available for other nodes to download. 
+5.  `mrt_broadcast_file`:  This allows for a node to broadcast the name of a file that they have available for other nodes to download. 
 6.  `mrt_receive1`:  This function will receive data over a single connection when there is at least a byte of data on the connection.
 7.  `receive_file`:  A function which will create and write a file with the same content as the requested file.
 8.   `request_file`:  A function which sends a request message to all nodes to download the specified file.
