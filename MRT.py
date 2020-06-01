@@ -13,7 +13,7 @@ class MRT:
 	BLOCKSIZE = 1024
 	WINDOWSIZE = 10
 	PACKETSIZE = 512
-	TIMEOUT = .3 #How long the sender waits to receive an ACK before assuming the packet was lost
+	TIMEOUT = .3 #How long the sender waits to receive an ACK before assuming the packet was lost. May have to change for higher latency.
 
 	connections = [] #contains all accepted connections
 	connections_waitlist = [] #contains all connection requests not yet accepted. 
@@ -43,17 +43,22 @@ class MRT:
 		self.receiver_thread = threading.Thread(target = self.receiver_receive)
 		self.maintainer_thread = threading.Thread(target = self.maintain_connections)
 
-	def mrt_open(self, host, port):
-		myip, myport = STUN_library.get_info(port)
-		self.public_ip = myip
-		self.public_port = myport
-		print('Public IP: {0} Public Port: {1}'.format(myip, myport))
+	def mrt_open(self, host, port, overWifi):
+		if overWifi == True:
+			myip, myport = STUN_library.get_info(port)
+			self.public_ip = myip
+			self.public_port = myport
+			print('Public IP: {0} Public Port: {1}'.format(myip, myport))
+		else:
+			self.public_ip = host
+			self.public_port = port
 		try:
 			self.s.bind((host,port))
 			self.ready = True
 			self.supernode = True
 			self.receiver_thread.start()
-			self.maintainer_thread.start()
+			if overWifi == True:
+				self.maintainer_thread.start()
 			print("Node binded to {0}. Now ready to connect or receive connections...".format((host,port)))
 			return True
 		except:
@@ -70,7 +75,7 @@ class MRT:
 	def maintain_connections(self): #send udp message every second to maintain connections / prevent external port from changing.
 		while self.ready:
 			if not self.connections:
-				self.s.sendto(''.encode(), ('203.0.113.0', 8080))
+				self.s.sendto(''.encode(), ('203.0.113.0', 8080)) #If 8080 here gives an error, try 0. (or viceversa)
 				#send to test server
 			else:
 				for conn in self.connections:
@@ -210,8 +215,6 @@ class MRT:
 		data = file.read(self.PACKETSIZE-16).decode()
 
 		while data != '':
-			#payload = data[0:self.PACKETSIZE-12]
-			#data = data[self.PACKETSIZE-12:]
 			payload = data
 			data = file.read(self.PACKETSIZE-16).decode()
 			packet = "{0}{1:04d}{2}".format('DATA',self.seq_num[conn], payload)
@@ -278,16 +281,18 @@ class MRT:
 			print('No other peers. Becoming new super node...')
 			self.supernode = True
 			return False
-		myaddr = self.s.getsockname()
+		#myaddr = self.s.getsockname()
 		peer = self.peers[0]
-		if myaddr[0] == peer[0] and myaddr[1] == peer[1]:
+		if self.public_ip == peer[0] and self.public_port == peer[1]:
 			print('Becoming new super node...')
 			self.supernode = True
-		else:
+			for i in range(1, len(self.peers)): #sending udp packets to all other peers besides self to traverse NAT, so can receive RCON.
+				#self.invite_connection(self.peers[i])
+				threading.Thread(target = self.invite_connection, args = (self.peers[i],)).start()
+		else: #not the supernode, connect to the supernode.
 			time.sleep(0.5)
 			#receiver thread is getting stuck in this connect thread. Open a new thread to attempt connection so receiver thread can still handle ACK.
 			threading.Thread(target = self.mrt_connect, args = (peer[0], peer[1])).start()
-			#self.mrt_connect(peer[0], peer[1])
 
 	def send_peers(self):
 		peers_list = ''
@@ -446,8 +451,3 @@ def add_checksum(data):
 	checksum = checksum[:8]
 	packet = '{0}{1}'.format(checksum, data).encode()
 	return packet
-
-
-
-
-
