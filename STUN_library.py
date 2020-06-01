@@ -1,4 +1,4 @@
-﻿import secrets # NOTE: Secrets library requires Python 3.6 or above
+import secrets # NOTE: Secrets library requires Python 3.6 or above
 import struct
 import binascii
 from enum import Enum
@@ -207,29 +207,3 @@ def get_info(my_port_num):
   s.close()
 
   return myip, myport
-
-#ip, port = get_info(8080)
-#print(ip + ' ' + str(port))
-# From RFC 3489 5. NAT Variations
-#   Full Cone: A full cone NAT is one where all requests from the
-#       same internal IP address and port are mapped to the same external
-#       IP address and port.  Furthermore, any external host can send a
-#       packet to the internal host, by sending a packet to the mapped
-#       external address.
-
-#    Restricted Cone: A restricted cone NAT is one where all requests
-#       from the same internal IP address and port are mapped to the same
-#       external IP address and port.  Unlike a full cone NAT, an external
-#       host (with IP address X) can send a packet to the internal host
-#       only if the internal host had previously sent a packet to IP
-#       address X.
-
-#    Port Restricted Cone: A port restricted cone NAT is like a
-#       restricted cone NAT, but the restriction includes port numbers.
-#       Specifically, an external host can send a packet, with source IP
-#       address X and source port P, to the internal host only if the
-#       internal host had previously sent a packet to IP address X and
-#       port P.
-
-
-
