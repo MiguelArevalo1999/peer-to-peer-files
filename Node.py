@@ -6,19 +6,13 @@ import time
 
 class Node:
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	neighbors = []
-	local_ip = 0
-	local_port = 0
-	public_ip = 0 
-	public_port = 0
-	NAT_Type = None
+	neighbors = [] #not actually used ATM, everything handled in MRT.
 	mrt = MRT()
 	isOpen = False
 	lock = threading.Lock()
 
-	#TODO (BRETT): Get Public IP and NAT Type
-	def node_open(self, ip, port):
-		self.mrt.mrt_open(ip, port)
+	def node_open(self, ip, port, overWifi):
+		self.mrt.mrt_open(ip, port, overWifi)
 		self.isOpen = True
 		connection_thread = threading.Thread(target = self.node_accept)
 		connection_thread.start()
@@ -54,21 +48,9 @@ class Node:
 	def node_request_file(self, file_name):
 		self.mrt.request_file(file_name) 
 
-	# #Disconnect from given connection
-	# def node_disconnect(self, ip, port):
-	# 	#TODO (THOMAS)
-
 	# # Close connection
 	def node_close(self):
 		self.mrt.mrt_close()
 		self.isOpen = False
-
-	# #Broadcast message. Create functions in MRT as neccesary
-	# def node_broadcast(self):
-	# 	#TODO (SEAN)
-
-	# #Download file. May be multiple functions (request, get previous files, etc.). Create functions in MRT as neccesary.
-	# def node_download()
-	# 	#TODO (SHANE)
 
 
