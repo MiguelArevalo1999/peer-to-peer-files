@@ -1,4 +1,6 @@
 import sys
+import tkinter as tk
+
 sys.path.append('../')
 from Node import Node
 
