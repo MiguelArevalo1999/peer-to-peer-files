@@ -75,7 +75,7 @@ class MRT:
 	def maintain_connections(self): #send udp message every second to maintain connections / prevent external port from changing.
 		while self.ready:
 			if not self.connections:
-				self.s.sendto(''.encode(), ('203.0.113.0', 8080)) #If 8080 here gives an error, try 0. (or viceversa)
+				self.s.sendto(''.encode(), ('228.1.1.10', 8080)) #If 8080 here gives an error, try 0. (or viceversa)
 				#send to test server
 			else:
 				for conn in self.connections:
